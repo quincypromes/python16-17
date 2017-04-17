@@ -1,0 +1,87 @@
+exam19/exam.py
+6d92274  on 19 Dec 2016
+@kozenasheva kozenasheva Create exam.py
+1 contributor
+RawBlameHistory    
+82 lines (71 sloc)  2.06 KB
+import re, os, html
+def opening():
+    f = open('C:\\Users\\student\\Desktop\\for_ex.html', 'r', encoding='utf-8')
+    s = f.read()
+    f.close()
+    return s
+
+def finding(s):
+    a = re.compile('<div class="categories">.*?<h1><a href=\".*?\">(.*?)<div class="posted">',flags=re.U | re.DOTALL)
+    t = a.findall(s)
+    text = ' '.join(t)
+    return text
+
+def cleaning(text):
+    reg1 = re.sub('\n', '', text)
+    reg2 = re.sub('\t', '', reg1)
+    reg3 = re.sub('</a>', '', reg2)
+    reg4 = re.sub('</h1>', '', reg3)
+    reg5 = re.sub('</p>', '', reg4)
+    reg6 = re.sub('<p>', '', reg5)
+    finaltext = reg6.replace("&nbsp;&rarr;&raquo;&mdash;&laquo&ndash;", " ")
+
+    n = finaltext.lower()
+    n2 = n.replace(',', '')
+    n1 = n2.replace('.', '')
+    n0 = n1.replace('»', '')
+    n3 = n0.replace('«', '')
+    n4 = n3.replace('-', '')
+    n5 = n4.replace('\n', '')
+    n6 = n5.replace(':', '')
+    n7 = n6.replace('\xad', '')
+    n8 = n7.replace('\xa0', '')
+    n9 = n8.replace('#', '')
+    n11 = n9.replace('&', '')
+    n12= re.sub(u"[0-9]{1,}", " ", n11)
+    m1 = n12.split(" ")
+    A = set(m1)
+    return A
+
+
+def opening2():
+    f1 = open('C:\\Users\\student\\Desktop\\adyghe-unparsed-words.txt', 'r', encoding='utf-8')
+    s1 = f1.read()
+    f1.close()
+    z = s1.split('\n')
+    B = set(z)
+    return B
+
+def comparing(A, B):
+    wordlist = open('wordlist.txt', 'a', encoding = 'utf - 8')
+    inter = A.intersection(B)
+    inter1 = '\n'.join(inter)
+    wordlist.write(inter1)
+
+def mystem(B):
+    inp = 'adyghe-unparsed-words.txt'
+    outp = 'an.txt'     
+    os.system(r'mystem.exe -nid ' + inp + ' ' + outp)
+
+def analyse():
+    f2 = open('an.txt', 'r', encoding = 'utf - 8')
+    f3 = open('rus_nouns.txt', 'a', encoding = 'utf - 8')
+    n = f2.read()
+    f2.close()
+    a2 = re.compile('(.*?){.*?=S.*?=им,ед.*?')
+    regex = a2.findall(n)
+    for word in regex:
+        f3.write(word + '\n')
+    f3.close()
+    
+def main():
+    g = opening()
+    g1 = finding(g)
+    g3 = cleaning(g1)
+    g4 = opening2()
+    comparing(g3, g4)
+    mystem(g4)
+    analyse()
+    
+if __name__ == '__main__':
+    main()
