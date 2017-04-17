@@ -1,0 +1,21 @@
+import urllib.request
+import json
+def post():
+    req = urllib.request.Request('https://api.vk.com/method/wall.get?owner_id=1&count=4') 
+    response = urllib.request.urlopen(req)
+    result = response.read().decode('utf-8')
+    data = json.loads(result) 
+    postID = data["response"][1]["id"] #вывели id записи, которая последняя у ДУрова
+    return(postID)
+def comments(postID):
+    if postID:
+        req1 = urllib.request.Request('https://api.vk.com/method/wall.getComments?owner_id=1&post_id=&count=100'+ str(postID)) 
+        response1 = urllib.request.urlopen(req1) 
+        result1 = response1.read().decode('utf-8')
+        print(result1)
+#def figure(result1):
+    import matplotlib.pyplot as plt
+
+if __name__ == '__main__':
+    g = post()
+    comments(g)
