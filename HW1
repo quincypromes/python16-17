@@ -1,0 +1,69 @@
+import requests
+import json
+import re
+#import matplotlib.pyplot as plt
+#from matplotlib import style
+#style.use('ggplot') 
+
+from collections import Counter
+
+def vk_api(method, **debily):
+    #print(debily)
+    api_request = 'https://api.vk.com/method/'+ method + '?'
+    api_request += '&'.join(['{}={}'.format(key, debily[key]) for key in debily])
+    return json.loads(requests.get(api_request).text)
+
+def txt():
+    get_method = "wall.get"
+    group_by_id = "groups.getById"
+    group_info = vk_api(group_by_id, group_id='dormitory8hse', v='5.63')
+    group_id = group_info['response'][0]['id']
+
+    posts = []
+    item_count = 101
+    result = vk_api('wall.get', owner_id=-group_id, v='5.63', count=100)
+    posts += result["response"]["items"]
+    import sys
+    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), 0xfffd)
+    norm = str(posts).translate(non_bmp_map)
+    
+    #print(posts)
+    while len(posts) < item_count:
+        result = vk_api('wall.get', owner_id=-group_id, v='5.63', count=100, offset=len(posts))
+        posts += result['response']["items"]
+    print(len(posts))
+    #print(norm)
+    return posts
+def ids(posts):
+    for e in posts:
+        id_s = e.get('id')
+        txt_id_s = open('posts.txt', 'w', encoding='UTF-8')
+        txt_id_s.write(id_s)
+        txt_id_s.close()
+        print(id_s)
+    for el in posts:
+        text = el.get('text')
+        txt_text = open('äää.txt', 'w', encoding='UTF-8')
+        txt_text.write(text)
+        txt_text.close()
+        print(text)
+    #return text
+    #return id_s
+
+#def dictionary(id_s , text):
+    #d = {}
+    #d.fromkeys(id_s[text])
+    #print(d)
+   
+    
+            
+
+def main():
+    b = txt()
+    ids(b)
+    #dictionary(ids(posts))
+
+    
+
+if __name__ == '__main__':
+    main()
